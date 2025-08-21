@@ -1,63 +1,53 @@
+import "reflect-metadata";
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import { AppDataSource } from "./config/database";
-import userRoutes from "./routes/userRoutes";
 import clientRoutes from "./routes/clientRoutes";
-import dashboardRoutes from "./routes/dashboardRoutes";
+import userRoutes from "./routes/userRoutes";
 import sellerRoutes from "./routes/sellerRoutes";
 import contractRoutes from "./routes/contractRoutes";
+import dashboardRoutes from "./routes/dashboardRoutes";
 import functionRoutes from "./routes/functionRoutes";
-import axios from "axios";
-
-dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
-// Middleware
-app.use(cors());
+// CORS configuration
+const corsOrigins = process.env.CORS_ORIGIN?.split(",") || [
+  "http://localhost:5173",
+];
+
+app.use(
+  cors({
+    origin: corsOrigins,
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 // Routes
-app.use("/api/users", userRoutes);
 app.use("/api/clients", clientRoutes);
-app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/seller", sellerRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/sellers", sellerRoutes);
 app.use("/api/contracts", contractRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/functions", functionRoutes);
-
-app.get("/api/getCnpjApi/:cnpj", async (req, res) => {
-  const cnpj = req.params.cnpj;
-  try {
-    const response = await axios.get(
-      `https://www.receitaws.com.br/v1/cnpj/${cnpj}`
-    );
-    res.json(response.data);
-  } catch (error) {
-    console.error("Error fetching CNPJ data:", error);
-    if (axios.isAxiosError(error) && error.response) {
-      return res
-        .status(error.response.status)
-        .json({ error: "Failed to fetch CNPJ data" });
-    }
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
 
 // Health check
 app.get("/health", (req, res) => {
-  res.json({ status: "OK", message: "Server is running" });
+  res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
 // Initialize database and start server
 AppDataSource.initialize()
   .then(() => {
-    console.log("Database connected successfully");
+    console.log("Data Source has been initialized!");
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
+      console.log(`Environment: ${process.env.NODE_ENV}`);
     });
   })
   .catch((error) => {
-    console.error("Database connection failed:", error);
+    console.error("Error during Data Source initialization:", error);
   });

@@ -10,7 +10,6 @@ export async function getExternalData(client: Client) {
     username: client.usuario_base,
     password: client.password_base,
     database: client.data_base,
-    entities: [], // adicione entidades se precisar mapear tabelas
     synchronize: false,
     ssl: true,
   });

@@ -12,6 +12,17 @@ lerna-debug.log*
 /dist-ssr
 *.local
 
+# Production builds
+dist/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Railway
+.railway/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -22,4 +33,3 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
-.env
