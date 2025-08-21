@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "drclickpgo-server",
   "version": "1.0.0",
   "description": "Backend server with Express, TypeScript, and TypeORM",
   "main": "dist/index.js",
@@ -7,7 +7,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
-    "postinstall": "tsc"
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "axios": "^1.10.0",
