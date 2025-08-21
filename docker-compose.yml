@@ -1,0 +1,45 @@
+version: "3.3"
+services:
+  postgres:
+    image: postgres:16
+    container_name: drclick_pgo_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: drclickpgodatabase
+    ports:
+      - "8000:5432"
+    networks:
+      - drclick-net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: drclick_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "6060:80"
+    depends_on:
+      - postgres
+    networks:
+      - drclick-net
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: drclick_cloudbeaver
+    restart: always
+    ports:
+      - "8978:8978"
+    depends_on:
+      - postgres
+    networks:
+      - drclick-net
+
+#volumes:
+#  pgdata:
+
+networks:
+  drclick-net:
+    driver: bridge
