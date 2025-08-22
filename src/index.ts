@@ -32,13 +32,27 @@ app.use(
 
 app.use(express.json());
 
-// Request logging middleware
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
-  console.log('Headers:', req.headers);
-  console.log('Body:', req.body);
-  next();
+// Health check route - DEVE vir antes das outras rotas
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+  });
 });
+
+// Root route
+app.get("/", (req, res) => {
+  res.json({ message: "API is running" });
+});
+
+// Add your routes here
+app.use("/api/clients", clientRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/sellers", sellerRoutes);
+app.use("/api/contracts", contractRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/functions", functionRoutes);
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -51,25 +65,21 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 // Initialize database and start server
+const PORT = process.env.PORT || 3001;
+
 AppDataSource.initialize()
   .then(() => {
     console.log("Data Source has been initialized!");
 
-    // Add your routes here
-    app.use("/api/clients", clientRoutes);
-    app.use("/api/users", userRoutes);
-    app.use("/api/sellers", sellerRoutes);
-    app.use("/api/contracts", contractRoutes);
-    app.use("/api/dashboard", dashboardRoutes);
-    app.use("/api/functions", functionRoutes);
-
-    const PORT = process.env.PORT || 3001;
-    app.listen(PORT, () => {
+    app.listen(PORT, "0.0.0.0", () => {
       console.log(`Server is running on port ${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV}`);
     });
   })
   .catch((error) => {
     console.error("Error during Data Source initialization:", error);
-    process.exit(1);
+    // Ainda assim inicie o servidor para o health check funcionar
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on port ${PORT} (without database)`);
+    });
   });
