@@ -6,7 +6,7 @@ import { Function } from "../entities/Functions";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  url: process.env.DB_URL,
+  url: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false, // Necessário para Railway
   },
