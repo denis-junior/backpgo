@@ -43,7 +43,7 @@ export class UserController {
     }
   }
 
-  async login(req: Request, res: Response) {
+  async login(req: Request, res: Response): Promise<Response | void> {
     try {
       console.log("Login attempt:", req.body);
 
