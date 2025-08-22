@@ -16,55 +16,8 @@ enum StatusCategory {
 }
 
 export class ContractController {
-  //   async createClient(req: Request, res: Response) {
-  //     try {
-  //       const clientData = req.body;
-  //       const client = new Client();
-  //       Object.assign(client, clientData);
 
-  //       const errors = await validate(client);
-  //       if (errors.length > 0) {
-  //         return res.status(400).json({ errors });
-  //       }
-
-  //       await clientRepository.save(client);
-  //       res.status(201).json(client);
-  //     } catch (error) {
-  //       console.error("Error creating client:", error);
-  //       res.status(500).json({ message: "Internal server error" });
-  //     }
-  //   }
-
-  //   async getAllClients(req: Request, res: Response) {
-  //     try {
-  //       const { IsNull } = require("typeorm");
-  //       const clients = await clientRepository.find({
-  //         where: { deleted_at: IsNull() },
-  //       });
-  //       res.json(clients);
-  //     } catch (error) {
-  //       res.status(500).json({ message: "Internal server error" });
-  //     }
-  //   }
-
-  //   async getClientById(req: Request, res: Response) {
-  //     try {
-  //       const { id } = req.params;
-  //       const client = await clientRepository.findOne({
-  //         where: { id_cliente: parseInt(id), deleted_at: IsNull() },
-  //       });
-
-  //       if (!client) {
-  //         return res.status(404).json({ message: "Client not found" });
-  //       }
-
-  //       res.json(client);
-  //     } catch (error) {
-  //       res.status(500).json({ message: "Internal server error" });
-  //     }
-  //   }
-
-  async updateStatusContract(req: Request, res: Response) {
+  async updateStatusContract(req: Request, res: Response): Promise<Response | void> {
     try {
       const { id } = req.params;
       const updateData = req.body;
@@ -95,7 +48,7 @@ export class ContractController {
     }
   }
 
-  async signContract(req: Request, res: Response) {
+  async signContract(req: Request, res: Response): Promise<Response | void> {
     try {
       const { id } = req.params;
 
@@ -126,7 +79,7 @@ export class ContractController {
     }
   }
 
-  async acceptProposal(req: Request, res: Response) {
+  async acceptProposal(req: Request, res: Response): Promise<Response | void> {
     try {
       const { id } = req.params;
 

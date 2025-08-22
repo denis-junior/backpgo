@@ -1,4 +1,9 @@
 import "reflect-metadata";
+import dotenv from "dotenv";
+
+// Carregar variáveis de ambiente antes de importar outros módulos
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
 import { AppDataSource } from "./config/database";
@@ -11,18 +16,20 @@ import functionRoutes from "./routes/functionRoutes";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
 // CORS configuration
-const corsOrigins = process.env.CORS_ORIGIN?.split(",") || [
-  "http://localhost:5173",
-];
+const corsOptions = {
+  origin: [
+    "https://frontpgo.vercel.app",
+    "http://localhost:3000",
+    "http://localhost:5173",
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"],
+  optionsSuccessStatus: 200,
+};
 
-app.use(
-  cors({
-    origin: corsOrigins,
-    credentials: true,
-  })
-);
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
@@ -36,7 +43,11 @@ app.use("/api/functions", functionRoutes);
 
 // Health check
 app.get("/health", (req, res) => {
-  res.json({ status: "OK", timestamp: new Date().toISOString() });
+  res.json({
+    status: "OK",
+    timestamp: new Date().toISOString(),
+    env: process.env.NODE_ENV,
+  });
 });
 
 // Initialize database and start server

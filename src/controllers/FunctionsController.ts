@@ -10,7 +10,7 @@ const functionsRepository = AppDataSource.getRepository(Function);
 const clientsRepository = AppDataSource.getRepository(Client);
 
 export class FunctionsController {
-  async createFunction(req: Request, res: Response) {
+  async createFunction(req: Request, res: Response): Promise<Response | void> {
     try {
       const functionData = req.body;
       const functionEntity = new Function();
@@ -29,7 +29,7 @@ export class FunctionsController {
     }
   }
 
-  async getAllFunctions(req: Request, res: Response) {
+  async getAllFunctions(req: Request, res: Response): Promise<Response | void> {
     try {
       const { IsNull } = require("typeorm");
       const functions = await functionsRepository.find({
@@ -43,8 +43,8 @@ export class FunctionsController {
       });
     }
   }
-  
-  async getFunctionById(req: Request, res: Response) {
+
+  async getFunctionById(req: Request, res: Response): Promise<Response | void> {
     try {
       const { id } = req.params;
       const functionEntity = await functionsRepository.findOne({
@@ -64,7 +64,7 @@ export class FunctionsController {
     }
   }
 
-  async updateFunction(req: Request, res: Response) {
+  async updateFunction(req: Request, res: Response): Promise<Response | void> {
     try {
       const { id } = req.params;
       const functionEntity = await functionsRepository.findOne({
@@ -92,7 +92,7 @@ export class FunctionsController {
     }
   }
 
-  async deleteFunction(req: Request, res: Response) {
+  async deleteFunction(req: Request, res: Response): Promise<Response | void> {
     try {
       const { id } = req.params;
       const functionEntity = await functionsRepository.findOne({
@@ -106,7 +106,7 @@ export class FunctionsController {
       // Soft delete: apenas marca deleted_at em vez de remover o registro
       functionEntity.deleted_at = new Date();
       await functionsRepository.save(functionEntity);
-      
+
       res.status(204).send();
     } catch (error) {
       console.error("Error deleting function:", error);
@@ -124,7 +124,9 @@ export class FunctionsController {
         });
       }
 
-      const clinic = await clientsRepository.findOne({ where: { id_cliente: selectedClinic } });
+      const clinic = await clientsRepository.findOne({
+        where: { id_cliente: selectedClinic },
+      });
 
       if (!clinic) {
         return res.status(404).json({
@@ -152,7 +154,7 @@ export class FunctionsController {
       }
 
       console.log("Query passed validation, executing...");
-      
+
       const externalDataSource = createExternalDatabase(clinic);
       await externalDataSource.initialize();
 
@@ -208,7 +210,11 @@ export class FunctionsController {
       const clients = (await clientsRepository.find()).filter(
         (client) => client.status === "CONVERTIDO" || client.status === "UPSELL"
       );
-      const results = [];
+      const results: Array<{
+        connection: string;
+        data?: any;
+        error?: string;
+      }> = [];
 
       for (const client of clients) {
         try {
@@ -230,7 +236,7 @@ export class FunctionsController {
               connError instanceof Error ? connError.message : "Unknown error",
           });
         }
-       }
+      }
 
       return res.status(200).json({
         success: true,

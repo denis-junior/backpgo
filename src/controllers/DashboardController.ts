@@ -4,9 +4,19 @@ import { Client } from "../entities/Client";
 import { getExternalData } from "../config/externalDatabase";
 
 export class DashboardController {
-  async getAllClients(req: Request, res: Response) {
-    const clients = (await AppDataSource.getRepository(Client).find()).filter(client => client.status === "CONVERTIDO" || client.status === "UPSELL");
-    const results = [];
+  async getAllClients(req: Request, res: Response): Promise<Response | void> {
+    const clients = (await AppDataSource.getRepository(Client).find()).filter(
+      (client) => client.status === "CONVERTIDO" || client.status === "UPSELL"
+    );
+    const results: Array<{
+      client_id: number;
+      client_name: string;
+      validaPagamento?: any;
+      validaRecebimento?: any;
+      isOnline?: boolean;
+      professionalMonths?: any[];
+      error?: string;
+    }> = [];
     let allDoctors = 0;
 
     for (const client of clients) {
@@ -34,12 +44,16 @@ export class DashboardController {
           });
         } catch (err) {
           const errorMessage = err instanceof Error ? err.message : String(err);
-          results.push({ client: client.id_cliente, error: errorMessage });
+          results.push({
+            client_id: client.id_cliente,
+            client_name: client.nome_fantasia,
+            error: errorMessage,
+          });
         }
       }
     }
 
-    res.json({clinics: results, totalDoctors: allDoctors});
+    res.json({ clinics: results, totalDoctors: allDoctors });
   }
 
   //   async getClientById(req: Request, res: Response) {

@@ -8,7 +8,7 @@ import { validate } from "class-validator";
 const userRepository = AppDataSource.getRepository(User);
 
 export class UserController {
-  async register(req: Request, res: Response) {
+  async register(req: Request, res: Response): Promise<Response | void> {
     try {
       const { name, email, password } = req.body;
 
@@ -43,7 +43,7 @@ export class UserController {
     }
   }
 
-  async login(req: Request, res: Response) {
+  async login(req: Request, res: Response): Promise<Response | void> {
     try {
       const { email, password } = req.body;
 
@@ -74,7 +74,7 @@ export class UserController {
     }
   }
 
-  async getAllUsers(req: Request, res: Response) {
+  async getAllUsers(req: Request, res: Response): Promise<Response | void> {
     try {
       const users = await userRepository.find({
         select: ["id", "name", "email", "created_at", "updated_at"],
@@ -85,7 +85,7 @@ export class UserController {
     }
   }
 
-  async getUserById(req: Request, res: Response) {
+  async getUserById(req: Request, res: Response): Promise<Response | void> {
     try {
       const { id } = req.params;
       const user = await userRepository.findOne({
@@ -103,7 +103,7 @@ export class UserController {
     }
   }
 
-  async updateUser(req: Request, res: Response) {
+  async updateUser(req: Request, res: Response): Promise<Response | void> {
     try {
       const { id } = req.params;
       const { name, email, password } = req.body;
@@ -137,7 +137,7 @@ export class UserController {
     }
   }
 
-  async deleteUser(req: Request, res: Response) {
+  async deleteUser(req: Request, res: Response): Promise<Response | void> {
     try {
       const { id } = req.params;
       const result = await userRepository.delete(id);

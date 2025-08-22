@@ -8,7 +8,7 @@ import { isNull } from "util";
 const sellerRepository = AppDataSource.getRepository(Seller);
 
 export class SellerController {
-  async createSeller(req: Request, res: Response) {
+  async createSeller(req: Request, res: Response): Promise<Response | void> {
     try {
       const sellerData = req.body;
       const seller = new Seller();
@@ -27,7 +27,7 @@ export class SellerController {
     }
   }
 
-  async getAllSellers(req: Request, res: Response) {
+  async getAllSellers(req: Request, res: Response): Promise<Response | void> {
     try {
       const { IsNull } = require("typeorm");
       const sellers = await sellerRepository.find({
@@ -40,7 +40,7 @@ export class SellerController {
     }
   }
 
-  async getSellerById(req: Request, res: Response) {
+  async getSellerById(req: Request, res: Response): Promise<Response | void> {
     try {
       const { id } = req.params;
       const seller = await sellerRepository.findOne({
@@ -57,7 +57,7 @@ export class SellerController {
     }
   }
 
-  async updateSeller(req: Request, res: Response) {
+  async updateSeller(req: Request, res: Response): Promise<Response | void> {
     try {
       const { id } = req.params;
       const updateData = req.body;
@@ -84,7 +84,7 @@ export class SellerController {
     }
   }
 
-  async deleteSeller(req: Request, res: Response) {
+  async deleteSeller(req: Request, res: Response): Promise<Response | void> {
     try {
       const { id } = req.params;
       const seller = await sellerRepository.findOne({

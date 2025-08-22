@@ -3,12 +3,11 @@ import { AppDataSource } from "../config/database";
 import { Client } from "../entities/Client";
 import { validate } from "class-validator";
 import { IsNull } from "typeorm";
-import { isNull } from "util";
 
 const clientRepository = AppDataSource.getRepository(Client);
 
 export class ClientController {
-  async createClient(req: Request, res: Response) {
+  async createClient(req: Request, res: Response): Promise<Response | void> {
     try {
       const clientData = req.body;
       const client = new Client();
@@ -27,9 +26,8 @@ export class ClientController {
     }
   }
 
-  async getAllClients(req: Request, res: Response) {
+  async getAllClients(req: Request, res: Response): Promise<Response | void> {
     try {
-      const { IsNull } = require("typeorm");
       const clients = await clientRepository.find({
         where: { deleted_at: IsNull() },
       });
@@ -39,7 +37,7 @@ export class ClientController {
     }
   }
 
-  async getClientById(req: Request, res: Response) {
+  async getClientById(req: Request, res: Response): Promise<Response | void> {
     try {
       const { id } = req.params;
       const client = await clientRepository.findOne({
@@ -56,7 +54,7 @@ export class ClientController {
     }
   }
 
-  async updateClient(req: Request, res: Response) {
+  async updateClient(req: Request, res: Response): Promise<Response | void> {
     try {
       const { id } = req.params;
       const updateData = req.body;
@@ -83,7 +81,7 @@ export class ClientController {
     }
   }
 
-  async deleteClient(req: Request, res: Response) {
+  async deleteClient(req: Request, res: Response): Promise<Response | void> {
     try {
       const { id } = req.params;
       const client = await clientRepository.findOne({
