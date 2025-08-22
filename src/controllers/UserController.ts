@@ -43,8 +43,10 @@ export class UserController {
     }
   }
 
-  async login(req: Request, res: Response): Promise<Response | void> {
+  async login(req: Request, res: Response) {
     try {
+      console.log("Login attempt:", req.body);
+
       const { email, password } = req.body;
 
       // Find user
@@ -68,9 +70,14 @@ export class UserController {
 
       // Remove password from response
       const { password: _, ...userResponse } = user;
-      res.json({ user: userResponse, token });
+      console.log("Login successful for user:", user.email);
+      res.json({ success: true, user: userResponse, token });
     } catch (error) {
-      res.status(500).json({ message: "Internal server error" });
+      console.error("Login error:", error);
+      res.status(500).json({
+        error: "Login failed",
+        message: error instanceof Error ? error.message : "Unknown error",
+      });
     }
   }
 
