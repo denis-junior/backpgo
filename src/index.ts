@@ -41,6 +41,16 @@ app.get("/health", (req, res) => {
   });
 });
 
+app.post("/teste", (req, res) => {
+  const {phrase} = req.body
+  res.status(200).json({
+    status: "ok",
+    message: phrase,
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+  });
+});
+
 // Root route
 app.get("/", (req, res) => {
   res.json({ message: "API is running" });
