@@ -71,6 +71,7 @@ export class UserController {
       // Remove password from response
       const { password: _, ...userResponse } = user;
       console.log("Login successful for user:", user.email);
+      console.log("token is", token);
       res.json({ success: true, user: userResponse, token });
     } catch (error) {
       console.error("Login error:", error);
