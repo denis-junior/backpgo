@@ -13,8 +13,8 @@ export const AppDataSource = new DataSource({
   ssl: process.env.NODE_ENV === 'production' ? {
     rejectUnauthorized: false
   } : false,
-  synchronize: true, // Mudando para true temporariamente para debug
-  logging: true, // Ativando logs sempre para debug
+  synchronize: false,
+  logging: true,
   entities: [User, Client, Seller, Function],
   migrations: [],
   subscribers: [],
